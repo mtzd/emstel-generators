@@ -1,0 +1,32 @@
+import { Injectable } from '@angular/core';
+import { <%=@http_provider %> } from '<%=@http_import %>';
+import { <%=@model %> } from '../models/<%=@model.dasherize %>';
+
+@Injectable()
+export class <%=@service_name %>Service {
+  readonly URL = '<%=@url %>';
+
+  constructor(private http: <%=@http_provider %>) { }
+
+  index() {
+    return this.http.get(this.URL).map(res => <%=@model %>.collection(res['<%=@model.pluralize.underscore%>']));
+  }
+
+  show(id) {
+    return this.http.get(this.URL + '/' + id).map(res => <%=@model %>.new(res['<%=@model.underscore %>'])); 
+  }
+
+  create(<%=@model.camelize(:lower) %>: <%=@model %>) {
+    return this.http.post(this.URL, { parameters: <%=@model.camelize(:lower) %>.toParameter() })
+               .map(res => <%=@model %>.new(res['<%=@model.underscore %>']));  
+  }
+
+  update(<%=@model.camelize(:lower) %>: <%=@model %>) {
+    return this.http.put(this.URL + '/' + <%=@model.camelize(:lower) %>.id, { parameters: <%=@model.camelize(:lower) %>.toParameter() })
+               .map(res => <%=@model %>.new(res['<%=@model.underscore %>'])); 
+  }
+
+  delete(id) {
+    return this.http.delete(this.URL + '/' + id).map(res => {}); 
+  }
+}

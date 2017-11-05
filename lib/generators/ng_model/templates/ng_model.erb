@@ -1,0 +1,65 @@
+<%- @associations.each do | association | -%>
+import { <%=association[:model] %> } from './<%=association[:file]%>';
+<%- end -%>
+<%- @belongs_to.each do | association | -%>
+import { <%=association[:model] %> } from './<%=association[:file]%>';
+<%- end -%>
+
+export class <%=@model_name%> {
+<%- @attributes.each do | attribute | -%>
+  private _<%= attribute[:name]%>: <%=attribute[:type] %>;
+<%- end -%>
+
+<%- @associations.each do | association | -%>
+  private _<%= association[:name]%>: Array<<%=association[:model] %>> = [];
+<%- end -%>
+
+<%- @belongs_to.each do | association | -%>
+  private _<%= association[:name]%>: <%=association[:model] %> =new <%=association[:model] %>();
+<%- end -%>
+
+  constructor() {}
+
+<%- @attributes.each do | attribute | -%>
+  get <%= attribute[:name]%>() { return this._<%= attribute[:name] %> }
+  set <%= attribute[:name]%>(<%=attribute[:name]%>) { this._<%=attribute[:name]%> = <%=attribute[:name]%>; }
+
+<%- end -%>
+<%- @associations.each do | association | -%>
+  get <%= association[:name]%>() { return this._<%= association[:name] %> }
+  set <%= association[:name]%>(<%=association[:name]%>) { this._<%=association[:name]%> = <%=association[:name]%>; }
+
+<%- end -%>
+<%- @belongs_to.each do | association | -%>
+  get <%= association[:name]%>() { return this._<%= association[:name] %> }
+  set <%= association[:name]%>(<%=association[:name]%>) { this._<%=association[:name]%> = <%=association[:name]%>; }
+
+<%- end -%>
+  public static new(json) {
+    let model =new <%=@model_name %>();
+    
+<%- @attributes.each do | attribute | -%>
+    model.<%=attribute[:name]%> =  json['<%=attribute[:rails_name]%>'];
+  <%- end -%>
+
+<%- @belongs_to.each do | association | -%>
+    if(json['<%=association[:rails_name]%>'] instanceof Object) {
+      model.<%=association[:name]%> = <%=association[:model] %>.new(json['<%=association[:rails_name]%>']);
+    }
+<%- end -%>
+
+<%- @associations.each do | association | -%>
+    if(json['<%=association[:rails_name]%>'] instanceof Array) {
+      model.<%=association[:name]%> = <%=association[:model] %>.collection(json['<%=association[:rails_name]%>']);
+    }
+<%- end -%>
+  }
+
+  public static collection(json) {
+    let collection = [];
+    for(let element of json) {
+      collection.push(<%=@model_name %>.new(element));
+    }
+    return collection;
+  }
+}
