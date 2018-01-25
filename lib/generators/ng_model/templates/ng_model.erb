@@ -33,8 +33,15 @@ export class <%=@model_name%> {
 <%- @belongs_to.each do | association | -%>
   get <%= association[:name]%>() { return this._<%= association[:name] %> }
   set <%= association[:name]%>(<%=association[:name]%>) { this._<%=association[:name]%> = <%=association[:name]%>; }
-
 <%- end -%>
+  public toJson() {
+    return {
+    <%- @attributes.each do | attribute | -%>
+      <%=attribute[:rails_name] %>: this.<%= attribute[:name] %>,
+    <%- end -%>     
+    };
+  }
+
   public static new(json) {
     let model =new <%=@model_name %>();
     
@@ -52,7 +59,9 @@ export class <%=@model_name%> {
     if(json['<%=association[:rails_name]%>'] instanceof Array) {
       model.<%=association[:name]%> = <%=association[:model] %>.collection(json['<%=association[:rails_name]%>']);
     }
-<%- end -%>
+  <%- end -%>
+
+    return model;
   }
 
   public static collection(json) {

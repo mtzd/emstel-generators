@@ -4,7 +4,7 @@ class NgModelGenerator < Rails::Generators::NamedBase
   def create_typescript_model
     begin
       types = { 'datetime': 'Date', 'String': 'string', 'integer': 'number',
-                'text': 'string' }
+                'text': 'string', 'uuid': 'string', 'decimal': 'number' }
 
       @model_name = file_name.singularize.camelize
       @attributes = @model_name.constantize.columns.reject{|r| r.name.end_with?("_id")}.collect do |c|

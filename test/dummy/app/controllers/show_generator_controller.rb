@@ -1,0 +1,2 @@
+class ShowGeneratorController < ApplicationController
+end

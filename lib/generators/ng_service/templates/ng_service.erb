@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { <%=@http_provider %> } from '<%=@http_import %>';
+import { <%=@http_provider %>Module } from '<%=@http_import %>';
 import { <%=@model %> } from '../models/<%=@model.dasherize %>';
 
 @Injectable()
@@ -17,12 +17,12 @@ export class <%=@service_name %>Service {
   }
 
   create(<%=@model.camelize(:lower) %>: <%=@model %>) {
-    return this.http.post(this.URL, { parameters: <%=@model.camelize(:lower) %>.toParameter() })
+    return this.http.post(this.URL, { params: <%=@model.camelize(:lower) %>.toJson() })
                .map(res => <%=@model %>.new(res['<%=@model.underscore %>']));  
   }
 
   update(<%=@model.camelize(:lower) %>: <%=@model %>) {
-    return this.http.put(this.URL + '/' + <%=@model.camelize(:lower) %>.id, { parameters: <%=@model.camelize(:lower) %>.toParameter() })
+    return this.http.put(this.URL + '/' + <%=@model.camelize(:lower) %>.id, { params: <%=@model.camelize(:lower) %>.toJson() })
                .map(res => <%=@model %>.new(res['<%=@model.underscore %>'])); 
   }
 
